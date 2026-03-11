@@ -1,0 +1,9 @@
+Serverga qo'yish:
+1) fayllarni serverga yuklang
+2) .env ni tekshiring
+3) docker compose up -d --build
+
+Muhim:
+- docker compose down -v ishlatmang
+- postgres_data volume o'chirilmasa ma'lumot saqlanadi
+- backup olish: docker compose exec db pg_dump -U user dashboard_db > backup.sql
