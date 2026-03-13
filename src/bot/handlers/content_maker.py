@@ -44,15 +44,32 @@ def _today_local() -> date:
 
 def _validate_deadline_str(s: str) -> Optional[datetime]:
     """
-    dd.mm.yyyy format; o'tgan sana bo'lmasin.
+    dd.mm format.
+    Yil avtomatik joriy yil bo'ladi.
+    Agar sana o'tib ketgan bo'lsa, keyingi yil olinadi.
     """
+    s = (s or "").strip()
+
     try:
-        dt = datetime.strptime(s.strip(), "%d.%m.%Y")
+        parsed = datetime.strptime(s, "%d.%m")
     except ValueError:
         return None
 
-    if dt.date() < _today_local():
+    today = _today_local()
+    year = today.year
+
+    try:
+        dt = datetime(year=year, month=parsed.month, day=parsed.day)
+    except ValueError:
         return None
+
+    # Agar bu sana joriy yilda o'tib ketgan bo'lsa, keyingi yilga o'tkazamiz
+    if dt.date() < today:
+        try:
+            dt = datetime(year=year + 1, month=parsed.month, day=parsed.day)
+        except ValueError:
+            return None
+
     return dt
 
 
